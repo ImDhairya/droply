@@ -94,6 +94,17 @@ export async function POST(request: NextRequest) {
 
     // validation for not storing exe, .php
 
+    const denyedFileExtensions = ["php", "exe", "md", "mp3", "bat"];
+
+    if (denyedFileExtensions.includes(fileExtension)) {
+      return NextResponse.json(
+        {
+          error: "Only images and pdf's are allowed to be uploaded",
+        },
+        {status: 401}
+      );
+    }
+
     const uniqueFileName = `${uuidv4()}.${fileExtension}`;
 
     const uploadResponse = await imageKit.upload({
@@ -125,7 +136,7 @@ export async function POST(request: NextRequest) {
     // },{status: 401})
     return NextResponse.json(
       {
-        error: "Only images and pdf are supported ",
+        error: "Failed to upload the file.",
       },
       {status: 401}
     );
